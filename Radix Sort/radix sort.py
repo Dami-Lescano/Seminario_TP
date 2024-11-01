@@ -62,14 +62,14 @@ for d in range(digitos):
     print(lista_ordenada)'''
 
 lista_ordenada = lista.copy()
-for d in range(digitos):
+""" for d in range(digitos):
     lista_aux2 = list()
     for n in range(10):#reversed(range(10)):
         for number in lista_ordenada:
             if(get_digit(number, d) == n):
                lista_aux2.append(number)
     lista_ordenada = lista_aux2.copy()
-    print(f"lista ordenada por digito {d+1}: {lista_ordenada}")
+    print(f"lista ordenada por digito {d+1}: {lista_ordenada}") """
 
 lista_ordenada = list()
 
@@ -110,16 +110,16 @@ def agregar_a_lista(lista, numero, cantidad):
         else:
             agregar_a_lista(lista_ordenada, n, veces_que_aparece)'''
 
-lista_aux = list()
+""" lista_aux = list()
 
 for c in lista_de_listas_de_colas[1]:
     for n in c:
         lista_aux.append(n)
     print(lista_aux)
 
-lista_aux2 = list()
+lista_aux2 = list() """
 
-for c in lista_de_listas_de_colas[0]:
+""" for c in lista_de_listas_de_colas[0]:
     while len(lista_aux) > len(lista_aux2):
         for n in c:
             for i in lista_aux:
@@ -129,4 +129,4 @@ for c in lista_de_listas_de_colas[0]:
                     
 
 
-print(lista_ordenada)
+print(lista_ordenada) """
