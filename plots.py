@@ -6,6 +6,10 @@ edades = [10, 12, 14, 16, 18, 20]
 pesos_hombres = [32, 37, 48, 52, 65, 72]
 pesos_mujeres = [30, 35, 45, 50, 60, 68]
 
+
+
+
+
 # Configuración del ancho de las barras y posición
 ancho_barra = 0.35  # Ancho de cada barra
 rango_edades = np.arange(len(edades))  # Posiciones para cada grupo de edad
