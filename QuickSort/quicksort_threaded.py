@@ -48,14 +48,16 @@ def quicksort(lista, pasoNumero, tipoPaso):
     if len(lista) <= 1:
         return lista
     else:
-        lock.acquire()
+        '''lock.acquire()
         print(f"Paso {pasoNumero} {tipoPaso}")
         print(f"Lista: {lista}")
-        lock.release()
+        lock.release()'''
         pivote = lista[0]
         lista.pop(0)
         for n in lista:
+            #lock.acquire()
             calculos += 1
+            #lock.release()
             numero = n
             if numero <= pivote:
                 listaMenores.append(numero)
@@ -73,9 +75,9 @@ def quicksort(lista, pasoNumero, tipoPaso):
         
         listaOrdenada = listaMenoresOrdenada + [pivote] + listaMayoresOrdenada
         
-        lock.acquire()
+        '''lock.acquire()
         print(f"Lista paso {pasoNumero} {tipoPaso}: {listaOrdenada}")
-        lock.release()
+        lock.release()'''
 
         if pasoNumero > pasos:
             pasos = pasoNumero

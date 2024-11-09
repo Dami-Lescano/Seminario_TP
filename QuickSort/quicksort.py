@@ -2,11 +2,11 @@ import random
 import time
 
 def generar_lista():
-    pregenerada = ""#str(input("Cargar lista pregenerada. "))
+    pregenerada = "s"#str(input("Cargar lista pregenerada. "))
     if pregenerada == "s":
-        lista = [0,1,2,3,4,5,6,7,8,9]
+        lista = range(0, 200)
     else:
-        cantidad = 10000#int(input("Ingresar cantidad de numeros. "))
+        cantidad = 200#int(input("Ingresar cantidad de numeros. "))
         limiteMenor = -cantidad#int(input("Ingresar el limite menor del conjunto. "))
         limiteMayor = cantidad#int(input("Ingresar el limite mayor del conjunto. "))
         repetidos = "s"#str(input("Permitir repetidos. "))
@@ -33,8 +33,8 @@ def quicksort(lista, pasoNumero, tipoPaso):
     listaOrdenada = []
     tamañoLista = len(lista)
     
-    print(f"Paso {pasoNumero} {tipoPaso}")
-    print(f"Lista: {lista}")
+    '''print(f"Paso {pasoNumero} {tipoPaso}")
+    print(f"Lista: {lista}")'''
     if tamañoLista <= 1:
         return lista
     else:
@@ -50,7 +50,7 @@ def quicksort(lista, pasoNumero, tipoPaso):
         listaMenoresOrdenados = quicksort(listaMenores, pasoNumero+1, "Menores")
         listaMayoresOrdenados = quicksort(listaMayores, pasoNumero+1, "Mayores")
         listaOrdenada = listaMenoresOrdenados + [pivote] + listaMayoresOrdenados
-        print(f"Lista paso {pasoNumero}: {listaOrdenada}")
+        #print(f"Lista paso {pasoNumero}: {listaOrdenada}")
         return listaOrdenada
 
 calculos = 0
