@@ -1,5 +1,6 @@
 import random
 import concurrent.futures
+import time
 
 #--------------------------------------------------------------
 #FUNCIONES EXTRAS
@@ -11,15 +12,38 @@ def get_digit(number, n):
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
+def generar_lista():
+    pregenerada = ""#str(input("Cargar lista pregenerada. "))
+    if pregenerada == "s":
+        lista = range(0, 200)
+    else:
+        cantidad = 200#int(input("Ingresar cantidad de numeros. "))
+        limiteMenor = 0#int(input("Ingresar el limite menor del conjunto. "))
+        limiteMayor = cantidad*2#int(input("Ingresar el limite mayor del conjunto. "))
+        repetidos = "s"#str(input("Permitir repetidos. "))
+
+
+        if repetidos == "s":
+            lista = list()
+            for _ in range(cantidad):
+                lista.append(random.randint(limiteMenor, limiteMayor))
+        else:
+            lista = set()
+            while len(lista) < cantidad:
+                lista.add(random.randint(limiteMenor, limiteMayor))
+    
+    return list(lista)
 
 #--------------------------------------------------------------
 # RADIX SORT
 #--------------------------------------------------------------
 
 def colocar_en_colas_segmento(segmento, digito):
+    global calculos
     # Crea colas para cada dígito del 0 al 9 en el segmento asignado
     colas_segmento = [[] for _ in range(10)]
     for number in segmento:
+        calculos += 1
         n = get_digit(number, digito)
         colas_segmento[n].append(number)
     return colas_segmento
@@ -45,7 +69,11 @@ def hacer_cola_segun_digito(lista, digito):
     return flatten(lista_de_colas)
 
 # Generamos una lista de números aleatorios para probar
-lista = [random.randint(0, 9999) for _ in range(100)]
+lista = generar_lista()
+
+calculos = 0
+
+tiempoInicio = time.time()
 
 print("Lista sin ordenar:", lista)
 
@@ -56,4 +84,8 @@ digitos = len(str(max(lista)))
 for digito in range(digitos):
     lista = hacer_cola_segun_digito(lista, digito)
 
-print("Lista ordenada:", lista)
+tiempoFinal = time.time()
+
+print(f"Lista ordenada final: {lista}")
+print(f"calculos = {calculos}, rango * cantidad")
+print(f"Tiempo transcurrido: {tiempoFinal - tiempoInicio} segundos")
