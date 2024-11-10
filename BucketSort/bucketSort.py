@@ -5,7 +5,7 @@ current_list = []
 
 cantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 calculos_single = []
-calculos_concurrentes = []
+
 
 def generar_lista(elementos = 100, maximo = 9999):
      ret = [random.randint(0, maximo) for _ in range(elementos)]
@@ -16,6 +16,8 @@ def bucket_sort(arr, bucket_count = 10):
     max_value = max(arr)
     bucket_size = (max_value + 1) // bucket_count
     
+    #bucket ---> {[0, 500],[500, 1000]...]
+
     # Crear cubos vacíos
     buckets = [[] for _ in range(bucket_count)]
     
@@ -46,6 +48,7 @@ f.write("cantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]\n" +
     "calculos_single = " + str(calculos_single))
 f.close()
 """
+
 data = generar_lista()
 sorted_data = bucket_sort()
 

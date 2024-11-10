@@ -1,4 +1,5 @@
 import random
+import math
 
 
 def quick_sort(array, low, high):
@@ -32,8 +33,16 @@ def partition(array, low, high):
   return i + 1
 
 calculos = 0
-arr = [random.randint(0, 1000) for _ in range(500)]#list(range(0,100))#[random.randint(0, 1000) for _ in range(100)]#[4,6,2,5,8,9,5,10]
+arr = [random.randint(0, 1000) for _ in range(4000)]#list(range(0,100))#[random.randint(0, 1000) for _ in range(100)]#[4,6,2,5,8,9,5,10]
 print(arr)
 quick_sort(arr, 0, len(arr)-1)
 print(arr)
-print(calculos)
+
+
+
+print("calculos en 500 elementos: " + str(calculos))
+
+esperado = 4000 * math.log(4000, 10)
+print("calculos esperados: " + str(esperado))
+
+

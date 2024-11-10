@@ -46,25 +46,32 @@ for i in cantidades:
 
 
 # Configuración del ancho de las barras y posición
-ancho_barra = 0.35  # Ancho de cada barra
+ancho_barra = 35  # Ancho de cada barra
 rango_cantidades = np.arange(len(cantidades))  # Posiciones para cada grupo de edad
+#print(rango_cantidades)
+
+xi_sin_concurrencia = []
+xi_con_concurrencia = []
+for i in cantidades:
+    xi_sin_concurrencia.append(i - ancho_barra/2)
+    xi_con_concurrencia.append(i + ancho_barra/2)
 
 # Crear el gráfico de barras   (n*log(n))
-plt.bar(rango_cantidades - ancho_barra/2, calculos_sin_concurrencia.mean(), width=ancho_barra, color='blue', label='Sin concurrencia')
-plt.bar(rango_cantidades + ancho_barra/2, calculos_con_concurrencia.mean(), width=ancho_barra, color='pink', label='Con concurrencia')
-plt.plot(cantidades, yi)
+plt.bar(xi_sin_concurrencia, calculos_sin_concurrencia.mean(), width=ancho_barra, color='blue', label='Sin concurrencia')
+plt.bar(xi_con_concurrencia, calculos_con_concurrencia.mean(), width=ancho_barra, color='pink', label='Con concurrencia')
+plt.plot(cantidades, yi, color = 'red')
 
-plt.xlim((0, 1000))
-plt.ylim((0, 12000))
 
 # Etiquetas y título
 plt.xlabel('Cantidad')
 plt.ylabel('Calculos')
 plt.title('Quick Sort')
-plt.xticks(rango_cantidades, cantidades)  # Configurar las etiquetas del eje x
+plt.xticks(cantidades)  # Configurar las etiquetas del eje x
 plt.legend()  # Mostrar la leyenda
 
 # Mostrar el gráfico
+plt.xlabel('Cantidad')
+plt.ylabel('Calculos')
 plt.show()
 
 #-------------------------------------------------------

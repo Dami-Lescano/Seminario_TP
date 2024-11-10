@@ -7,6 +7,7 @@ data = [random.randint(0, 999) for _ in range(100)]
 def counting_sort(arr, max_value):
     # Inicializar el conteo de cada número en el rango [0, max_value]
     count = [0] * (max_value + 1)
+    #count ---> [0, 0, 0, ...]
     
     # Contar cada elemento en la lista original
     for num in arr:
