@@ -7,7 +7,7 @@ import time
 #--------------------------------------------------------------
 
 def get_digit(number, n):
-    return abs(number) // 10**n % 10
+    return number // 10**n % 10
 
 def flatten(xss):
     return [x for xs in xss for x in xs]

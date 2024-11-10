@@ -6,7 +6,7 @@ import time
 #--------------------------------------------------------------
 
 def get_digit(number, n):
-    return abs(number) // 10**n % 10
+    return number // 10**n % 10
 
 def flatten(xss):
     return [x for xs in xss for x in xs]
@@ -16,7 +16,7 @@ def generar_lista():
     if pregenerada == "s":
         lista = range(0, 200)
     else:
-        cantidad = 200#int(input("Ingresar cantidad de numeros. "))
+        cantidad = 500#int(input("Ingresar cantidad de numeros. "))
         limiteMenor = 0#int(input("Ingresar el limite menor del conjunto. "))
         limiteMayor = cantidad*2#int(input("Ingresar el limite mayor del conjunto. "))
         repetidos = "s"#str(input("Permitir repetidos. "))
@@ -68,5 +68,5 @@ for digito in range(digitos):
 tiempoFinal = time.time()
 
 print(f"Lista ordenada final: {lista}")
-print(f"calculos = {calculos}, rango * cantidad")
+print(f"calculos = {calculos}, digitos * cantidad")
 print(f"Tiempo transcurrido: {tiempoFinal - tiempoInicio} segundos")
