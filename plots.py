@@ -41,6 +41,10 @@ for i in cantidades:
 
 #d = {'Cantidad':pd.Series([100, 200, 300, 400, 500, 600, 700, 800, 900, 1000])}
 
+
+
+
+
 # Configuración del ancho de las barras y posición
 ancho_barra = 0.35  # Ancho de cada barra
 rango_cantidades = np.arange(len(cantidades))  # Posiciones para cada grupo de edad
