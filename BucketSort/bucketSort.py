@@ -32,6 +32,7 @@ def bucket_sort(arr, bucket_count = 10):
     # Ordenar cada cubo y unir los resultados
     sorted_arr = []
     for bucket in buckets:
+        
         sorted_arr.extend(sorted(bucket))
     
     return sorted_arr

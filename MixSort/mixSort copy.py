@@ -1,9 +1,14 @@
 import random
 import matplotlib.pyplot as plt
 import math
+import threading
 
-acumulador = 0
+
 current_list = []
+count_operations = 0  # Operaciones en counting sort
+output_operations = 0  # Operaciones al agregar a la lista ordenada
+bucket_operations = 0  # Operaciones al distribuir en los cubos
+lock = threading.Lock()  # Lock para proteger las operaciones compartidas
 
 cantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 #cantidades = [100, 200]
@@ -17,36 +22,34 @@ def generar_lista(elementos = 100, maximo = 9999):
 #-------------------------------------------------------------------------
 #***COUNTING SORT***
 #-------------------------------------------------------------------------
-def counting_sort(arr, max_value, min_value = 0):
-    global acumulador
-    operaciones_entrada = 0
-    operaciones_salida = 0
+def counting_sort(arr, max_value, result, index):
+    global count_operations, output_operations
+    local_count_operations = 0
+    local_output_operations = 0
     # Inicializar el conteo de cada número en el rango [0, max_value]
     count = [0] * (max_value + 1)
-
-    #count ---> [0, 0, 0, ...]
+    min_value = min(arr)
+    local_count_operations += max_value - min_value
     
     # Contar cada elemento en la lista original
     for num in arr:
         count[num] += 1
-        operaciones_entrada += 1
-        #print("maximo: " + str(max_value))
-    print(f"operaciones de entrada: {operaciones_entrada}")
-    acumulador += operaciones_entrada
-    
+        #local_count_operations += 1
+
     # Generar la lista ordenada usando los conteos
     sorted_arr = []
-    freqs = 0
-    print("count lenght: " + str(len(count)))
-
     for num, freq in enumerate(count):
-        sorted_arr.extend([num] * freq)
-        operaciones_salida += freq
-        freqs += 1
-        #print(freq)
-    print(f"operaciones de salida: {operaciones_salida}")
-    acumulador += operaciones_salida 
-    return sorted_arr
+        if freq > 0:
+            sorted_arr.extend([num] * freq)     #[3,3,3,3,3,5,5,5,5,5] -> n
+            local_output_operations += freq     #[0,0,5,0,5] -> n
+    
+    # Guardar el resultado en la posición correspondiente
+    result[index] = sorted_arr
+
+    # Actualizar los acumuladores globales de operaciones
+    with lock:
+        count_operations += local_count_operations
+        output_operations += local_output_operations
 #-------------------------------------------------------------------------
 
 
@@ -55,14 +58,12 @@ def counting_sort(arr, max_value, min_value = 0):
 #***BUCKET SORT***
 #-------------------------------------------------------------------------
 def bucket_sort(arr, bucket_count = 10):
-    global acumulador
-    operaciones_bucket = 0
+    global bucket_operations
+    local_bucket_operations = 0
 
     # Número de cubos (buckets)
     max_value = max(arr)
     bucket_size = (max_value + 1) // bucket_count
-    
-    #bucket ---> {[0, 500],[500, 1000]...]
 
     # Crear cubos vacíos
     buckets = [[] for _ in range(bucket_count)]
@@ -74,18 +75,35 @@ def bucket_sort(arr, bucket_count = 10):
             buckets[index].append(num)
         else:
             buckets[bucket_count - 1].append(num)
-        operaciones_bucket +=1
-    print(f"operaciones de bucket: {operaciones_bucket}")
-    acumulador += operaciones_bucket
-    # Ordenar cada cubo y unir los resultados
+        local_bucket_operations += 1  # Una operación por cada asignación a un cubo
+    
+    # Actualizar las operaciones de distribución globalmente
+    with lock:
+        bucket_operations += local_bucket_operations
+
+    # Lista para almacenar los resultados de cada cubo ordenado
+    sorted_buckets = [None] * bucket_count
+    
+    # Lista para almacenar los threads
+    threads = []
+
     # Ordenar cada cubo usando counting sort y unir los resultados
-    sorted_arr = []
-    for bucket in buckets:
+    for i, bucket in enumerate(buckets):
         if bucket:
             max_value_in_bucket = max(bucket)  # Calcular el valor máximo en cada cubo
-            #min_value_in_bucket = min(bucket)
-            sorted_bucket = counting_sort(bucket, max_value_in_bucket)
-            sorted_arr.extend(sorted_bucket)
+            thread = threading.Thread(target=counting_sort, args=(bucket, max_value_in_bucket, sorted_buckets, i))
+            threads.append(thread)
+            thread.start()
+    
+    # Esperar a que todos los threads terminen
+    for thread in threads:
+        thread.join()
+    
+    # Combinar los resultados de todos los cubos ordenados
+    sorted_arr = []
+    for bucket in sorted_buckets:
+        if bucket:
+            sorted_arr.extend(bucket)
     
     return sorted_arr
 #-------------------------------------------------------------------------
@@ -94,11 +112,11 @@ dummy = [50]
 for i in cantidades:
     current_list = generar_lista(i)
     sorted_list = bucket_sort(current_list)
-    calculos_single.append(acumulador)
-    #print("data: " + str(current_list))
-    #print("sorted: " + str(sorted_list))
-    print("acumulador: " + str(acumulador))
-    acumulador = 0
+
+    calculos_single.append(count_operations + output_operations + bucket_operations)
+    count_operations = 0  # Operaciones en counting sort
+    output_operations = 0  # Operaciones al agregar a la lista ordenada
+    bucket_operations = 0  # Operaciones al distribuir en los cubos
 
 """
 f = open("mixSort.txt", "w")
@@ -108,7 +126,7 @@ f.write("cantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]\n" +
 f.close()
 """
 
-f = open("MixSort/mixSort.txt", "w")
+f = open("MixSort/mixSort_thread.txt", "w")
 f.write("cantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]\n" + 
     "calculos_single = " + str(calculos_single))
 f.close()
@@ -117,7 +135,7 @@ f.close()
 yi = []
 
 for i in cantidades:
-    current = (i+10000) 
+    current = i+(i+10000) 
     yi.append(current)
 
 # Configuración del ancho de las barras y posición
@@ -132,9 +150,9 @@ for i in cantidades:
     xi_con_concurrencia.append(i + ancho_barra/2)
 
 # Crear el gráfico de barras   (n*log(n))
-plt.bar(xi_sin_concurrencia, calculos_single, width=ancho_barra, color='blue', label='Sin concurrencia')
+plt.bar(cantidades, calculos_single, width=ancho_barra, color='blue', label='calculos realizados')
 #plt.bar(xi_con_concurrencia, calculos_con_concurrencia.mean(), width=ancho_barra, color='pink', label='Con concurrencia')
-plt.plot(cantidades, yi, color = 'red')
+plt.plot(cantidades, yi, color = 'red', label = 'peor caso posible')
 
 
 # Etiquetas y título
