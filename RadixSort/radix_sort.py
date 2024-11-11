@@ -1,132 +1,148 @@
 import random
+import time
+
+from matplotlib import pyplot as plt
+
+#--------------------------------------------------------------
+#FUNCIONES EXTRAS
+#--------------------------------------------------------------
+
+
+
 
 def get_digit(number, n):
-    return abs(number) // 10**n % 10
-
-def flatten(xss):
-    return [x for xs in xss for x in xs]
+    return number // 10**n % 10
 
 
-def hacer_cola_segun_digito(digito):
-    lista_de_colas = [[],[],[],[],[],[],[],[],[],[]]
-    for number in lista:
-        n = get_digit(number, digito)
-        lista_de_colas[n].append(number)
-    print(f"lista de colas del digito {digito+1}: {lista_de_colas}")
-    lista_de_listas_de_colas[digito] = lista_de_colas
 
-lista = [13,3,23,11,12,0,11,44,44]#list(range(0,20))#[29, 66, 20, 0, 97, 26, 7, 5, 53, 6, 99, 99]
-#lista = list(reversed(lista))
-lista_de_listas_de_colas = []
 
-""" for _ in range(10):
-    lista.append(random.randint(0, 99)) """
+def generar_lista(n, rango):
+    pregenerada = ""#str(input("Cargar lista pregenerada. "))
+    if pregenerada == "s":
+        lista = range(0, 200)
+    else:
+        cantidad = n#500#int(input("Ingresar cantidad de numeros. "))
+        limiteMenor = 0#int(input("Ingresar el limite menor del conjunto. "))
+        limiteMayor = rango#999999#int(input("Ingresar el limite mayor del conjunto. "))
+        repetidos = "s"#str(input("Permitir repetidos. "))
 
-print(lista)
 
-digitos = len(str(max(lista)))
-
-for _ in range(digitos):
-    lista_de_listas_de_colas.append([])
-
-for digito in range(digitos):
-    hacer_cola_segun_digito(digito)
-
-print(lista_de_listas_de_colas)
-'''
-lista_numeros_ordenados = []
-
-for lc in lista_de_listas_de_colas:
-    for c in lc:
-        for n in c:
-            veces_que_aparece = 1
-            es_el_menor = True
-            if not(lista_numeros_ordenados.__contains__(n)):
-
-                for lc2 in reversed(lista_de_listas_de_colas):
-                    for c2 in lc2:
-                        for n2 in c2:
-                            if not(lista_numeros_ordenados.__contains__(n2)):
-                                if n == n2:
-                                    veces_que_aparece += 1
-                                elif n > n2:
-                                    es_el_menor = False
-                if es_el_menor:
-                    lista_numeros_ordenados.append(n)
-                    for _ in range(int(veces_que_aparece/(digitos))):
-                        lista_ordenada.append(n)
-'''
-'''lista_ordenada = lista
-for d in range(digitos):
-    lista_ordenada = sorted(lista_ordenada, key=lambda n : get_digit(n, d))
-    print(lista_ordenada)'''
-
-lista_ordenada = lista.copy()
-""" for d in range(digitos):
-    lista_aux2 = list()
-    for n in range(10):#reversed(range(10)):
-        for number in lista_ordenada:
-            if(get_digit(number, d) == n):
-               lista_aux2.append(number)
-    lista_ordenada = lista_aux2.copy()
-    print(f"lista ordenada por digito {d+1}: {lista_ordenada}") """
-
-lista_ordenada = list()
-
-'''for i in reversed(range(len(lista_de_listas_de_colas))):
-    lc = lista_de_listas_de_colas[i]
-    for c in lc:
-        for n in c:
-            veces_que_aparece = c.count(n)
-            if len(c) > 1 and veces_que_aparece != len(c) and i == 0:
-                pass
-            else:
-                for _ in range(veces_que_aparece):
-                    lista_ordenada.append(n)'''
-
-def agregar_a_lista(lista, numero, cantidad):
-    for _ in range(cantidad):
-        lista.append(numero)
-
-'''for c in lista_de_listas_de_colas[digitos-1]:
-    for n in c:
-        aux = digitos - 1
-        veces_que_aparece = c.count(n)
-        es_el_menor = True
-        if len(c) > 1 and veces_que_aparece != len(c) and digitos != 1:
-            c2 = lista_de_listas_de_colas[aux][get_digit(n, digitos)]
-            if(len(c2) == 1):
-                agregar_a_lista(lista_ordenada, n, veces_que_aparece)
-            else:
-                
-                es_el_menor = min(c2) == n
-                if es_el_menor:
-                    agregar_a_lista(lista_ordenada, n, veces_que_aparece)
-                
-            """ if(not es_el_menor):
-            for _ in range(veces_que_aparece):
-                print(n)
-                lista_ordenada.append(n) """
+        if repetidos == "s":
+            lista = list()
+            for _ in range(cantidad):
+                lista.append(random.randint(limiteMenor, limiteMayor))
         else:
-            agregar_a_lista(lista_ordenada, n, veces_que_aparece)'''
+            lista = set()
+            while len(lista) < cantidad:
+                lista.add(random.randint(limiteMenor, limiteMayor))
+    
+    return list(lista)
 
-""" lista_aux = list()
-
-for c in lista_de_listas_de_colas[1]:
-    for n in c:
-        lista_aux.append(n)
-    print(lista_aux)
-
-lista_aux2 = list() """
-
-""" for c in lista_de_listas_de_colas[0]:
-    while len(lista_aux) > len(lista_aux2):
-        for n in c:
-            for i in lista_aux:
-                if n == i:
-                    lista_aux2.append(n)
-                    print(lista_aux2)
-                    
+#--------------------------------------------------------------
 
 
-print(lista_ordenada) """
+
+def radix_sort(digito, lista_a_ordenar):
+    lista_de_colas = [[],[],[],[],[],[],[],[],[],[]]
+    lista_ordenada = []
+    global calculos
+    if digito == -1:
+        return lista_a_ordenar
+    else:
+        for number in lista_a_ordenar:
+            n = get_digit(number, digito)
+            lista_de_colas[n].append(number)
+            calculos += 1
+        for cola in lista_de_colas:
+            if len(cola) > 1:
+                lista_ordenada.extend(radix_sort(digito-1, cola))
+            elif len(cola) == 1:
+                lista_ordenada.extend(cola)
+        return lista_ordenada
+    
+
+
+#lista = [13,3,23,11,12,0,11,44,44]
+
+listaCalculos = []
+listaTiempos = []
+listaCantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+maximo = 9999
+
+for n in listaCantidades:
+
+    lista = generar_lista(n, maximo)
+
+    calculos = 0
+
+    #print("Lista sin ordenar: ", lista)
+
+    tiempoInicio = time.time()
+
+    digitos = len(str(max(lista)))
+
+    lista_ordenada_final = radix_sort(digitos-1, lista)
+
+    tiempoFinal = time.time()
+    
+    tiempoTotal = tiempoFinal - tiempoInicio
+
+    listaTiempos.append(tiempoTotal)
+
+    listaCalculos.append(calculos)
+
+    #print(f"Lista ordenada final: {lista_ordenada_final}")
+    #print(f"calculos = {calculos}, digitos * cantidad")
+
+yi = []
+
+for i in listaCantidades:
+    current = digitos*(i)
+    yi.append(current)
+
+print("cantidades: ", listaCantidades)
+print("calculos: ", listaCalculos)
+print("tiempos: ", listaTiempos)
+print("esperado: ", yi)
+
+ancho_barra = 35
+
+xi_sin_concurrencia = []
+xi_con_concurrencia = []
+for i in listaCantidades:
+    xi_sin_concurrencia.append(i - ancho_barra/2)
+    xi_con_concurrencia.append(i + ancho_barra/2)
+
+plt.bar(xi_sin_concurrencia, listaCalculos, width=ancho_barra, color='blue', label='Sin concurrencia')
+plt.bar(xi_con_concurrencia, [280, 608, 980, 1331, 1688, 2067, 2473, 2853, 3243, 3644], width=ancho_barra, color='pink', label='Con concurrencia')
+plt.plot(listaCantidades, yi, color = 'red', label=f'Peor caso = n*d')#k es la base
+
+
+# Etiquetas y título
+plt.xlabel('Cantidad (n)')
+plt.ylabel('Calculos')
+plt.title(f'Radix Sort - d = {digitos}')
+plt.xticks(listaCantidades)  # Configurar las etiquetas del eje x
+plt.legend()  # Mostrar la leyenda
+
+# Mostrar el gráfico
+plt.show()
+
+#-------------------------------------------------------
+
+tiempo_concurrencia = [0.018971920013427734, 0.054999351501464844, 0.05300021171569824, 0.07000017166137695, 0.09000158309936523, 0.10600018501281738, 0.12599849700927734, 0.14021897315979004, 0.16199994087219238, 0.18200325965881348]
+
+plt.bar(xi_sin_concurrencia, listaTiempos, width=ancho_barra, color='blue', label='Sin concurrencia')
+plt.bar(xi_con_concurrencia, tiempo_concurrencia, width=ancho_barra, color='pink', label='Con concurrencia')
+#plt.plot(listaCantidades, yi, color = 'red', label=f'Peor caso = n*d')#k es la base
+
+
+# Etiquetas y título
+plt.title(f'Radix Sort - d = {digitos}')
+plt.xticks(listaCantidades)  # Configurar las etiquetas del eje x
+plt.legend()  # Mostrar la leyenda
+
+# Mostrar el gráfico
+plt.xlabel('Cantidad')
+plt.ylabel('Tiempo')
+plt.show()

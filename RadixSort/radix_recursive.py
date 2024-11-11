@@ -11,14 +11,14 @@ def get_digit(number, n):
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
-def generar_lista():
+def generar_lista(n):
     pregenerada = ""#str(input("Cargar lista pregenerada. "))
     if pregenerada == "s":
         lista = range(0, 200)
     else:
-        cantidad = 500#int(input("Ingresar cantidad de numeros. "))
+        cantidad = n#500#int(input("Ingresar cantidad de numeros. "))
         limiteMenor = 0#int(input("Ingresar el limite menor del conjunto. "))
-        limiteMayor = cantidad*2#int(input("Ingresar el limite mayor del conjunto. "))
+        limiteMayor = 9999#int(input("Ingresar el limite mayor del conjunto. "))
         repetidos = "s"#str(input("Permitir repetidos. "))
 
 
@@ -48,25 +48,36 @@ def hacer_cola_segun_digito(lista, digito):
     print(f"Lista de colas para el dígito {digito+1}: {lista_de_colas}")
     return flatten(lista_de_colas)
 
+listaCalculos = []
+listaCantidades = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+
 # Generamos una lista de números aleatorios para probar
-lista = generar_lista()
+for c in listaCantidades:
+    lista = generar_lista(c)
 
-calculos = 0
+    calculos = 0
 
-print("Lista sin ordenar:", lista)
+    print("Lista sin ordenar:", lista)
 
-tiempoInicio = time.time()
+    tiempoInicio = time.time()
 
-# Obtenemos el número máximo de dígitos entre los números
-digitos = len(str(max(lista)))
+    # Obtenemos el número máximo de dígitos entre los números
+    digitos = len(str(max(lista)))
 
-# Ordenamos repetidamente por cada dígito
-for digito in range(digitos):
-    lista = hacer_cola_segun_digito(lista, digito)
+    # Ordenamos repetidamente por cada dígito
+    for digito in range(digitos):
+        lista = hacer_cola_segun_digito(lista, digito)
 
 
-tiempoFinal = time.time()
+    tiempoFinal = time.time()
 
-print(f"Lista ordenada final: {lista}")
-print(f"calculos = {calculos}, digitos * cantidad")
-print(f"Tiempo transcurrido: {tiempoFinal - tiempoInicio} segundos")
+    tiempoTotal = tiempoFinal - tiempoInicio
+
+    listaCalculos.append(calculos)
+
+    print(f"Lista ordenada final: {lista}")
+    print(f"calculos = {calculos}, digitos * cantidad")
+    print(f"Tiempo transcurrido: {tiempoFinal - tiempoInicio} segundos")
+
+print("cantidades: ", listaCantidades)
+print("calculos: ", listaCalculos)
