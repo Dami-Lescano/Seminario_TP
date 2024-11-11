@@ -36,7 +36,8 @@ def radix_sort(digito, lista_a_ordenar):
     lista_de_colas = [[],[],[],[],[],[],[],[],[],[]]
     lista_ordenada = []
     global calculos
-    if digito == -1:
+    global digitos
+    if digito == digitos:
         return lista_a_ordenar
     else:
         for number in lista_a_ordenar:
@@ -45,11 +46,8 @@ def radix_sort(digito, lista_a_ordenar):
             calculos += 1
         print(f"Buckets: {lista_de_colas}")
         for cola in lista_de_colas:
-            if len(cola) > 1:
-                print(f"Bucket n°{get_digit(cola[0], digito)}")
-                lista_ordenada.extend(radix_sort(digito-1, cola))
-            elif len(cola) == 1:
-                lista_ordenada.extend(cola)
+            lista_ordenada.extend(cola)
+        lista_ordenada = radix_sort(digito+1,lista_ordenada)
         return lista_ordenada
 
 lista = generar_lista()
@@ -62,7 +60,7 @@ tiempo_inicio = time.time()
 
 digitos = len(str(max(lista)))
 
-lista_ordenada_final = radix_sort(digitos-1, lista)
+lista_ordenada_final = radix_sort(0, lista)
 
 tiempo_final = time.time()
 
