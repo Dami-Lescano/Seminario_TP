@@ -1,132 +1,71 @@
 import random
+import time
+
+#--------------------------------------------------------------
+#FUNCIONES EXTRAS
+#--------------------------------------------------------------
 
 def get_digit(number, n):
-    return abs(number) // 10**n % 10
+    return number // 10**n % 10
 
-def flatten(xss):
-    return [x for xs in xss for x in xs]
+def generar_lista():
+    pregenerada = str(input("Cargar lista pregenerada. "))
+    if pregenerada == "s":
+        lista = [random.randint(0,9999) for _ in range(1000)]
+    else:
+        cantidad = int(input("Ingresar cantidad de numeros. "))
+        limite_menor = 0#int(input("Ingresar el limite menor del conjunto. "))
+        limite_mayor = int(input("Ingresar el limite mayor del conjunto. "))
+        repetidos = str(input("Permitir repetidos. "))
 
 
-def hacer_cola_segun_digito(digito):
+        if repetidos == "s":
+            lista = list()
+            for _ in range(cantidad):
+                lista.append(random.randint(limite_menor, limite_mayor))
+        else:
+            lista = set()
+            while len(lista) < cantidad:
+                lista.add(random.randint(limite_menor, limite_mayor))
+    
+    return list(lista)
+
+#--------------------------------------------------------------
+
+def radix_sort(digito, lista_a_ordenar):
     lista_de_colas = [[],[],[],[],[],[],[],[],[],[]]
-    for number in lista:
-        n = get_digit(number, digito)
-        lista_de_colas[n].append(number)
-    print(f"lista de colas del digito {digito+1}: {lista_de_colas}")
-    lista_de_listas_de_colas[digito] = lista_de_colas
+    lista_ordenada = []
+    global calculos
+    if digito == -1:
+        return lista_a_ordenar
+    else:
+        for number in lista_a_ordenar:
+            n = get_digit(number, digito)
+            lista_de_colas[n].append(number)
+            calculos += 1
+        for cola in lista_de_colas:
+            if len(cola) > 1:
+                lista_ordenada.extend(radix_sort(digito-1, cola))
+            elif len(cola) == 1:
+                lista_ordenada.extend(cola)
+        return lista_ordenada
 
-lista = [13,3,23,11,12,0,11,44,44]#list(range(0,20))#[29, 66, 20, 0, 97, 26, 7, 5, 53, 6, 99, 99]
-#lista = list(reversed(lista))
-lista_de_listas_de_colas = []
+lista = generar_lista()
 
-""" for _ in range(10):
-    lista.append(random.randint(0, 99)) """
+calculos = 0
 
-print(lista)
+print("Lista sin ordenar: ", lista)
+
+tiempo_inicio = time.time()
 
 digitos = len(str(max(lista)))
 
-for _ in range(digitos):
-    lista_de_listas_de_colas.append([])
+lista_ordenada_final = radix_sort(digitos-1, lista)
 
-for digito in range(digitos):
-    hacer_cola_segun_digito(digito)
+tiempo_final = time.time()
 
-print(lista_de_listas_de_colas)
-'''
-lista_numeros_ordenados = []
+tiempo_total = tiempo_final - tiempo_inicio
 
-for lc in lista_de_listas_de_colas:
-    for c in lc:
-        for n in c:
-            veces_que_aparece = 1
-            es_el_menor = True
-            if not(lista_numeros_ordenados.__contains__(n)):
-
-                for lc2 in reversed(lista_de_listas_de_colas):
-                    for c2 in lc2:
-                        for n2 in c2:
-                            if not(lista_numeros_ordenados.__contains__(n2)):
-                                if n == n2:
-                                    veces_que_aparece += 1
-                                elif n > n2:
-                                    es_el_menor = False
-                if es_el_menor:
-                    lista_numeros_ordenados.append(n)
-                    for _ in range(int(veces_que_aparece/(digitos))):
-                        lista_ordenada.append(n)
-'''
-'''lista_ordenada = lista
-for d in range(digitos):
-    lista_ordenada = sorted(lista_ordenada, key=lambda n : get_digit(n, d))
-    print(lista_ordenada)'''
-
-lista_ordenada = lista.copy()
-""" for d in range(digitos):
-    lista_aux2 = list()
-    for n in range(10):#reversed(range(10)):
-        for number in lista_ordenada:
-            if(get_digit(number, d) == n):
-               lista_aux2.append(number)
-    lista_ordenada = lista_aux2.copy()
-    print(f"lista ordenada por digito {d+1}: {lista_ordenada}") """
-
-lista_ordenada = list()
-
-'''for i in reversed(range(len(lista_de_listas_de_colas))):
-    lc = lista_de_listas_de_colas[i]
-    for c in lc:
-        for n in c:
-            veces_que_aparece = c.count(n)
-            if len(c) > 1 and veces_que_aparece != len(c) and i == 0:
-                pass
-            else:
-                for _ in range(veces_que_aparece):
-                    lista_ordenada.append(n)'''
-
-def agregar_a_lista(lista, numero, cantidad):
-    for _ in range(cantidad):
-        lista.append(numero)
-
-'''for c in lista_de_listas_de_colas[digitos-1]:
-    for n in c:
-        aux = digitos - 1
-        veces_que_aparece = c.count(n)
-        es_el_menor = True
-        if len(c) > 1 and veces_que_aparece != len(c) and digitos != 1:
-            c2 = lista_de_listas_de_colas[aux][get_digit(n, digitos)]
-            if(len(c2) == 1):
-                agregar_a_lista(lista_ordenada, n, veces_que_aparece)
-            else:
-                
-                es_el_menor = min(c2) == n
-                if es_el_menor:
-                    agregar_a_lista(lista_ordenada, n, veces_que_aparece)
-                
-            """ if(not es_el_menor):
-            for _ in range(veces_que_aparece):
-                print(n)
-                lista_ordenada.append(n) """
-        else:
-            agregar_a_lista(lista_ordenada, n, veces_que_aparece)'''
-
-""" lista_aux = list()
-
-for c in lista_de_listas_de_colas[1]:
-    for n in c:
-        lista_aux.append(n)
-    print(lista_aux)
-
-lista_aux2 = list() """
-
-""" for c in lista_de_listas_de_colas[0]:
-    while len(lista_aux) > len(lista_aux2):
-        for n in c:
-            for i in lista_aux:
-                if n == i:
-                    lista_aux2.append(n)
-                    print(lista_aux2)
-                    
-
-
-print(lista_ordenada) """
+print(f"Lista ordenada final: {lista_ordenada_final}")
+print(f"calculos = {calculos}")
+print(f"Tiempo transcurrido = {tiempo_total}")

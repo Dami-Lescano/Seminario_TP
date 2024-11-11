@@ -1,45 +1,94 @@
-#HOLO
-
 import random
 from threading import *
+import time
+
+class NewThread(Thread):
+    def __init__(self, group=None, target=None, name=None, args=(), kwargs={}):
+        Thread.__init__(self, group, target, name, args, kwargs)
+
+    def run(self):
+        if self._target != None:
+            self._return = self._target(*self._args, **self._kwargs)
+
+    def join(self, *args):
+        Thread.join(self, *args)
+        return self._return
+
+#--------------------------------------------------------------
+#FUNCIONES EXTRAS
+#--------------------------------------------------------------
+
+def place_holder(c):
+    return c
 
 def get_digit(number, n):
-    return abs(number) // 10**n % 10
+    return number // 10**n % 10
 
-def flatten(xss):
-    return [x for xs in xss for x in xs]
+def generar_lista():
+    pregenerada = str(input("Cargar lista pregenerada. "))
+    if pregenerada == "s":
+        lista = [random.randint(0,9999) for _ in range(1000)]
+    else:
+        cantidad = int(input("Ingresar cantidad de numeros. "))
+        limite_menor = 0#int(input("Ingresar el limite menor del conjunto. "))
+        limite_mayor = int(input("Ingresar el limite mayor del conjunto. "))
+        repetidos = str(input("Permitir repetidos. "))
 
 
-def hacer_cola_segun_digito(digito):
+        if repetidos == "s":
+            lista = list()
+            for _ in range(cantidad):
+                lista.append(random.randint(limite_menor, limite_mayor))
+        else:
+            lista = set()
+            while len(lista) < cantidad:
+                lista.add(random.randint(limite_menor, limite_mayor))
+    
+    return list(lista)
+
+#--------------------------------------------------------------
+
+def radix_sort(digito, lista_a_ordenar):
     lista_de_colas = [[],[],[],[],[],[],[],[],[],[]]
-    for number in lista:
-        n = get_digit(number, digito)
-        lista_de_colas[n].append(number)
-    print(f"lista de colas del digito {digito+1}: {lista_de_colas}")
-    lista_de_listas_de_colas[digito] = lista_de_colas
+    lista_ordenada = []
+    global calculos
+    if digito == -1:
+        return lista_a_ordenar
+    else:
+        for number in lista_a_ordenar:
+            n = get_digit(number, digito)
+            lista_de_colas[n].append(number)
+            calculos += 1
+        threads = []
+        for cola in lista_de_colas:
+            if len(cola) > 1:
+                radix_thread = NewThread(target=radix_sort, args=([digito-1, cola]))
+                threads.append(radix_thread)
+                radix_thread.start()
+            elif len(cola) == 1:
+                radix_thread = NewThread(target=place_holder, args=([cola]))
+                threads.append(radix_thread)
+                radix_thread.start()
+        for t in threads:
+            lista_ordenada.extend(t.join())
+        return lista_ordenada
 
-lista = []
+lista = generar_lista()
 
-lista_de_listas_de_colas = []
+print("Lista sin ordenar: ", lista)
 
-for _ in range(10):
-    lista.append(random.randint(0, 99))
+calculos = 0
 
-print(lista)
+tiempo_inicio = time.time()
 
 digitos = len(str(max(lista)))
 
-threads = []
+lista_ordenada_final = radix_sort(digitos-1, lista)
 
-for _ in range(digitos):
-    lista_de_listas_de_colas.append([])
+tiempo_final = time.time()
 
-for digito in range(digitos):
-    p = Thread(target=hacer_cola_segun_digito, args=([digito]))
-    threads.append(p)
-    p.start()
+tiempo_total = tiempo_final - tiempo_inicio
 
-for t in threads:
-    t.join()
-
-print(lista_de_listas_de_colas)
+print(f"Lista ordenada final: {lista_ordenada_final}")
+print(f"calculos = {calculos}, digitos * cantidad")
+print(f"Tiempo transcurrido = {tiempo_total}")
